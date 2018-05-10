@@ -1,4 +1,4 @@
- - import_playbook: get_osp_facts.yml
+- import_playbook: get_osp_facts.yml
 
 - hosts: apps
   become: yes
