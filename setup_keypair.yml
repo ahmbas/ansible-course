@@ -1,0 +1,9 @@
+- hosts: jumpbox
+  tags: setup_keypair
+  tasks:
+    - name: add keypair
+      os_keypair:
+        cloud: ospcloud
+        state: present
+        name: ansible_ssh
+        public_key_file: /root/.ssh/id_rsa.pub

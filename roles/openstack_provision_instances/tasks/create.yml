@@ -1,0 +1,54 @@
+- name: get contents of ssh key
+  command: cat /home/cloud-user/openstack.pub
+  register: openstack_ssh_key
+
+- name: provision instances
+  os_server:
+    state: present
+    cloud: ospcloud
+    name: "{{item.name}}"
+    image: "{{item.image}}"
+    key_name: "{{item.keypair}}"
+    timeout: 300
+    security_groups: "{{item.security_group}}"
+    flavor: "{{item.flavor}}"
+    nics:
+    - net-name: private_network
+    meta: "{{item.metadata}}"
+    userdata: |
+      #!/bin/bash
+      mkdir /home/cloud-user/.ssh
+      curl -o /tmp/openstack.pub http://www.opentlc.com/download/ansible_bootcamp/openstack_keys/openstack.pub
+      cat /tmp/openstack.pub >> /home/cloud-user/.ssh/authorized_keys
+      chown -R cloud-user:cloud-user /home/cloud-user/.ssh
+      chmod 700 /home/cloud-user/.ssh
+      chmod 600 /home/cloud-user/.ssh/authorized_keys
+      /sbin/restorecon -r /home/cloud-user/.ssh
+      curl -o /tmp/internal.repo http://www.opentlc.com/download/ansible_bootcamp/repo/internal.repo
+      cp /tmp/internal.repo /etc/yum.repos.d/internal.repo
+  with_items: "{{instances}}"
+
+
+- name: add floating IP to "{{ item.name }}"
+  os_floating_ip:
+    cloud: ospcloud
+    state: present
+    reuse: yes
+    server: "{{ item.name }}"
+    network: ext_network
+    wait: true
+    timeout: 180
+  with_items: "{{instances}}"
+  register: floating_ips
+
+# - name: debug
+#   debug:
+#     msg: "{{floating_ips.results | map(attribute='floating_ip') | list}}"
+
+- name: wait for ssh to come up
+  wait_for:
+    host: "{{ item['floating_ip_address'] }}"
+    port: 22
+    search_regex: OpenSSH
+    timeout: 600
+  with_items: "{{floating_ips.results | map(attribute='floating_ip') | list}}"

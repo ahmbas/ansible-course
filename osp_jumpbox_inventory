@@ -1,0 +1,2 @@
+[jumpbox]
+workstation-5414.rhpds.opentlc.com ansible_ssh_user=cloud-user ansible_ssh_private_key_file=~/.ssh/openstack.pem ansible_python_interpreter="/root/shade/bin/python" ansible_become=True

@@ -1,0 +1,60 @@
+---
+# defaults file for openstack_provision_instances
+
+teardown: false
+openstack_ssh_key:
+add_ssh_userdata: "echo {{openstack_ssh_key.stdout | default('')}} >> /root/.ssh/authorized_keys"
+
+instances:
+  - name: frontend
+    metadata: group=frontends, deployment_name=QA
+    flavor: m2.small
+    keypair: 3_tier_app
+    networks:
+      public: ext_network
+      private: private_network
+    image: rhel-guest
+    security_group:
+      - frontend
+      - default
+    userdata: "{{add_ssh_userdata}}"
+
+  - name: app1
+    metadata: group=apps, deployment_name=QA
+    flavor: m2.small
+    keypair: 3_tier_app
+    networks:
+      public: ext_network
+      private: private_network
+    image: rhel-guest
+    security_group:
+      - app
+      - default
+    userdata: "{{add_ssh_userdata}}"
+
+  - name: app2
+    tags: app2
+    metadata: group=apps, deployment_name=QA
+    flavor: m2.small
+    keypair: 3_tier_app
+    networks:
+      public: ext_network
+      private: private_network
+    image: rhel-guest
+    security_group:
+      - app
+      - default
+    userdata: "{{add_ssh_userdata}}"
+
+  - name: db
+    metadata: group=db, deployment_name=QA
+    flavor: m2.small
+    keypair: 3_tier_app
+    networks:
+      public: ext_network
+      private: private_network
+    image: rhel-guest
+    security_group:
+      - db
+      - default
+    userdata: "{{add_ssh_userdata}}"

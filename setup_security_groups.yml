@@ -1,0 +1,4 @@
+- hosts: jumpbox
+  tags: setup security groups
+  roles:
+    - role: openstack_security_group

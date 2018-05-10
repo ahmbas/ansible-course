@@ -1,0 +1,45 @@
+---
+# defaults file for openstack_security_group
+app_security_group:
+    name: app
+    rules:
+      - port_min: 8080
+        port_max: 8080
+        protocol: tcp
+      - port_min: 22
+        port_max: 22
+        protocol: tcp
+      - port_min: -1
+        port_max: -1
+        protocol: icmp
+
+db_security_group:
+    name: db
+    rules:
+      - port_min: 5432
+        port_max: 5432
+        protocol: tcp
+      - port_min: 22
+        port_max: 22
+        protocol: tcp
+      - port_min: -1
+        port_max: -1
+        protocol: icmp
+
+frontend_security_group:
+    name: frontend
+    rules:
+      - port_min: 80
+        port_max: 80
+        protocol: tcp
+      - port_min: 22
+        port_max: 22
+        protocol: tcp
+      - port_min: -1
+        port_max: -1
+        protocol: icmp
+
+security_groups:
+  - "{{app_security_group}}"
+  - "{{db_security_group}}"
+  - "{{frontend_security_group}}"

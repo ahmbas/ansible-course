@@ -1,0 +1,9 @@
+---
+# tasks file for appdbs
+- name: install postgres
+  yum: name=postgresql-server state=latest
+  notify:
+    - init postgres
+    - start postgres
+    - enable postgres
+    - wait for postgres

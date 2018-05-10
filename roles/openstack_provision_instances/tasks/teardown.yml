@@ -1,0 +1,8 @@
+- name: remove instances
+  os_server:
+    state: absent
+    cloud: ospcloud
+    name: "{{item}}"
+  with_items: "{{instances | map(attribute='name') | list}}"
+  tags:
+    - teardown

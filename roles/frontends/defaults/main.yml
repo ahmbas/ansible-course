@@ -1,0 +1,4 @@
+haproxy_packages:
+  - haproxy
+apps_count: "{{ groups['apps'] | length }}"
+apps_hostnames: "{{ groups['apps'] }}"

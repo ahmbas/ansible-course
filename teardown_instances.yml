@@ -1,0 +1,6 @@
+- hosts: jumpbox
+  tags: provision instances
+  vars:
+    teardown: True
+  roles:
+    - role: openstack_provision_instances
