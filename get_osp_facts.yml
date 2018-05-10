@@ -1,5 +1,7 @@
 # tasks file for osp-facts
 - hosts: jumpbox
+  vars:
+    ansible_python_interpreter: "/root/shade/bin/python"
   tasks:
   - name: fetch instance info
     os_server_facts:
