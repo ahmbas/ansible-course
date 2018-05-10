@@ -1,0 +1,7 @@
+- hosts: localhost
+  become: yes
+  tasks:
+    - name: Get EC2 Facts
+      ec2_instance_facts:
+        filters:
+          "tag:Name": bastion

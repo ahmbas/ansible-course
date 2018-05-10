@@ -3,5 +3,5 @@
   tags:
     - provision_aws
   tasks:
-    - name: run opentlc lab provision credentials
+    - name: run opentlc lab provision script
       shell: source /root/credential.rc ; sh /root/order_svc.sh -y -c 'OPENTLC Automation' -i 'Three Tier Application' -t 1
