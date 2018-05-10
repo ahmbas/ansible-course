@@ -5,3 +5,8 @@
       ec2_instance_facts:
         filters:
           "tag:Name": bastion
+      register: result
+
+    - name: print ec2
+      debug:
+        msg: "{{result}}"
