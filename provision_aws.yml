@@ -1,0 +1,7 @@
+- hosts: jumpbox
+  become: yes
+  tags:
+    - provision_aws
+  tasks:
+    - name: run opentlc lab provision credentials
+      shell: source /root/credential.rc ; ./root/order_svc.sh -y -c 'OPENTLC Automation' -i 'Three Tier Application' -t 1
