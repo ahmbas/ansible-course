@@ -1,3 +1,9 @@
+- hosts: local
+  tasks:
+    - name: starting provisoning
+      debug:
+        msg: starting provisoning
+
 - import_playbook: setup_flavor.yml
 - import_playbook: setup_security_groups.yml
 - import_playbook: setup_networks.yml
