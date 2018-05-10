@@ -1,0 +1,11 @@
+- import_playbook: get_osp_facts.yml
+
+- hosts: jumpbox
+  become: yes
+  tags: test haproxy
+  tasks:
+  - name: ensure haproxy is running
+    uri:
+      url: http://{{item}}/
+      status_code: 200
+    with_items: "{{groups['frontends']|list}}"
