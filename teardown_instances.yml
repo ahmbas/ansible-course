@@ -1,6 +1,7 @@
 - hosts: jumpbox
   tags: provision instances
   vars:
+    ansible_python_interpreter: "/root/shade/bin/python"
     teardown: True
   roles:
     - role: openstack_provision_instances
