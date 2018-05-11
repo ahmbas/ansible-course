@@ -10,12 +10,14 @@
   tags: configure_apps
   roles:
     - role: apps
+      delegate_to: tag_three_tier_app_*_bastion
 
 - hosts: db
   become: yes
   tags: configure_db
   roles:
     - role: appdbs
+      delegate_to: tag_three_tier_app_*_bastion
 
 - hosts: frontends
   become: yes
@@ -24,6 +26,7 @@
     GUID:  "{{ GUID | default(lookup('env','GUID')) or 5414 }}"
   roles:
     - role: frontends
+      delegate_to: tag_three_tier_app_*_bastion
 
 - hosts: jumpbox
   become: yes
@@ -34,3 +37,4 @@
       url: http://{{item}}/
       status_code: 200
     with_items: "{{groups['frontends']|list}}"
+    delegate_to: tag_three_tier_app_*_bastion
