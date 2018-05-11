@@ -24,6 +24,6 @@
   tasks:
   - name: ensure haproxy is running
     uri:
-      url: http://{{item}}/
+      url: http://{% raw %}{{item}}{% endraw %}/
       status_code: 200
     with_items: {% raw %}"{{groups['frontends']|list}}"{% endraw %}
