@@ -10,7 +10,6 @@
           "tag:owner": abashir*
           "tag:Project": three-tier-app-*
       register: result
-
-    - name: print
-      debug:
-        msg: "{{result}}"
+      until: result.instances != []
+      retries: 100
+      delay: 60
