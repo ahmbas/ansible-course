@@ -1,0 +1,15 @@
+- name: refresh inventory
+  hosts: localhost
+  connection: local
+  gather_facts: False
+  tasks:
+    - name: Refresh EC2 facts
+      ec2_instance_facts:
+        filters:
+          "tag:owner": abashir*
+          "tag-key": tag_three_tier_app*
+      register: result
+
+    - name: print
+      debug:
+        msg: "{{result}}"
