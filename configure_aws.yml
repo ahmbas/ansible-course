@@ -18,6 +18,12 @@
       repo: 'https://github.com/ahmbas/ansible-course.git'
       dest: /root/ansible-course
 
+  - name: clone repo locally as well
+    git:
+      repo: 'https://github.com/ahmbas/ansible-course.git'
+      dest: /root/ansible-course
+    delegate_to: localhost
+
   - name: add playbook template
     template:
       src: /root/ansible-course/provision_aws.yaml.j2
