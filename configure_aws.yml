@@ -22,8 +22,8 @@
     template:
       src: /root/ansible-course/provision_aws.yaml.j2
       dest: /root/ansible-course/provision_aws_playbook.yaml
-      owner: bin
-      group: wheel
+      owner: root
+      group: root
       mode: 0644
 
   - name: run playbook
