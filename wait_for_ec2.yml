@@ -8,7 +8,7 @@
         region: us-east-1
         filters:
           "tag:owner": abashir*
-          "tag:Project": tag_three_tier_app_*
+          "tag:Project": three-tier-app-*
       register: result
 
     - name: print
