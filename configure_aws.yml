@@ -1,3 +1,10 @@
+- hosts: tag_three_tier_app_*_bastion
+  become: yes
+  tasks:
+    - name: print host vars
+      debug:
+        var: hostvars[inventory_hostname]
+
 - hosts: apps
   become: yes
   tags: configure_apps
