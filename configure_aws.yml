@@ -1,23 +1,38 @@
 - hosts: tag_three_tier_app_*_bastion
   become: yes
   tasks:
-    - name: get ip for proxy ssh
-      debug:
-        var: hostvars[inventory_hostname]
+  - name: get ssh key name
+    find:
+      paths: /root/.ssh
+      patterns: '*.pem'
+    register: result
+
+  - name: copy pem to tower
+    fetch:
+      src: "{{result.files[0].path}}"
+      dest: /tmp/
+    register: file
+  - name: hi
+    debug:
+      msg: "{{file.dest}}"
 
 - hosts: tag_three_tier_app_*_app
   become: yes
-  tags: configure_apps
   vars:
-    ansible_ssh_common_args: '-o StrictHostKeyChecking=no -o ProxyCommand="ssh -W %h:%p -q  abashir-redhat.com@bastion.abdd.example.opentlc.com"'
+    ansible_ssh_private_key_file: "{{file.dest}}"
+    ansible_ssh_user: ec2-user
+    ansible_user: ec2-user
+  tags: configure_apps
   roles:
     - role: apps
 
-- hosts: tag_three_tier_app_*_appdb
+- hosts: tag_three_tier_app_*_db
   become: yes
-  tags: configure_db
   vars:
-    ansible_ssh_common_args: '-o StrictHostKeyChecking=no -o ProxyCommand="ssh -W %h:%p -q  abashir-redhat.com@bastion.abdd.example.opentlc.com"'
+    ansible_ssh_private_key_file: "{{file.dest}}"
+    ansible_ssh_user: ec2-user
+    ansible_user: ec2-user
+  tags: configure_db
   roles:
     - role: appdbs
 
@@ -25,8 +40,10 @@
   become: yes
   tags: configure_frontend
   vars:
-    ansible_ssh_common_args: '-o StrictHostKeyChecking=no -o ProxyCommand="ssh -W %h:%p -q  abashir-redhat.com@bastion.abdd.example.opentlc.com"'
     GUID:  "{{ GUID | default(lookup('env','GUID')) or 5414 }}"
+    ansible_ssh_private_key_file: "{{file.dest}}"
+    ansible_ssh_user: ec2-user
+    ansible_user: ec2-user
   roles:
     - role: frontends
 
@@ -39,4 +56,3 @@
       url: http://{{item}}/
       status_code: 200
     with_items: "{{groups['frontends']|list}}"
-    delegate_to: tag_three_tier_app_*_bastion
