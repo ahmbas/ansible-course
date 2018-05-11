@@ -1,34 +1,36 @@
 - hosts: tag_three_tier_app_*_bastion
   become: yes
   tasks:
-    - name: print host vars
+    - name: get ip for proxy ssh
       debug:
         var: hostvars[inventory_hostname]
 
-- hosts: apps
+- hosts: tag_three_tier_app_*_app
   become: yes
   tags: configure_apps
+  vars:
+    ansible_ssh_common_args: '-o ProxyCommand="ssh -W %h:%p -q  abashir-redhat.com@bastion.abdd.example.opentlc.com"'
   roles:
     - role: apps
-      delegate_to: tag_three_tier_app_*_bastion
 
-- hosts: db
+- hosts: tag_three_tier_app_*_appdb
   become: yes
   tags: configure_db
+  vars:
+    ansible_ssh_common_args: '-o ProxyCommand="ssh -W %h:%p -q  abashir-redhat.com@bastion.abdd.example.opentlc.com"'
   roles:
     - role: appdbs
-      delegate_to: tag_three_tier_app_*_bastion
 
-- hosts: frontends
+- hosts: tag_three_tier_app_*_frontend
   become: yes
   tags: configure_frontend
   vars:
+    ansible_ssh_common_args: '-o ProxyCommand="ssh -W %h:%p -q  abashir-redhat.com@bastion.abdd.example.opentlc.com"'
     GUID:  "{{ GUID | default(lookup('env','GUID')) or 5414 }}"
   roles:
     - role: frontends
-      delegate_to: tag_three_tier_app_*_bastion
 
-- hosts: jumpbox
+- hosts: tag_three_tier_app_*_bastion
   become: yes
   tags: test haproxy
   tasks:
