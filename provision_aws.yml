@@ -9,4 +9,4 @@
 
     - name: print provision_result
       debug:
-        msg: provision_result
+        msg: {{provision_result}}
