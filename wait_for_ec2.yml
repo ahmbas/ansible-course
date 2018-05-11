@@ -13,3 +13,10 @@
       until: result.instances != []
       retries: 100
       delay: 60
+
+    - name: trigger update till 3 tier appears
+      uri:
+        url: https://tower2.7dc9.example.opentlc.com/api/v2/inventories/6/update_inventory_sources/
+        method: POST
+        user: admin
+        password: r3dh4t!
