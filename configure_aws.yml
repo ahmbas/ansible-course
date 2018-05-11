@@ -7,7 +7,7 @@
       user: admin
       password: r3dh4t!
       body_format: json
-    until: group.keys() |  map('regex_search','tag_three_tier_app*') | list
+    until: groups.keys() |  map('regex_search','tag_three_tier_app*') | list
 
 
 - hosts: tag_three_tier_app_*_bastion
