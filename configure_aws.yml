@@ -8,6 +8,8 @@
 - hosts: tag_three_tier_app_*_app
   become: yes
   tags: configure_apps
+  vars:
+    ansible_ssh_common_args: '-o ProxyCommand="ssh -W %h:%p -q  abashir-redhat.com@bastion.abdd.example.opentlc.com"'
   roles:
     - role: apps
 
