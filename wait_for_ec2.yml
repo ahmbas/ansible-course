@@ -5,6 +5,7 @@
   tasks:
     - name: Refresh EC2 facts
       ec2_instance_facts:
+        region: us-east-1
         filters:
           "tag:owner": abashir*
           "tag-key": tag_three_tier_app*
