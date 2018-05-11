@@ -26,4 +26,4 @@
     uri:
       url: http://{{item}}/
       status_code: 200
-    with_items: "{{groups['frontends']|list}}"
+    with_items: {% raw %}"{{groups['frontends']|list}}"{% endraw %}
