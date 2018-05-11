@@ -1,0 +1,29 @@
+- hosts: apps
+  become: yes
+  tags: configure_apps
+  roles:
+    - role: apps
+
+- hosts: db
+  become: yes
+  tags: configure_db
+  roles:
+    - role: appdbs
+
+- hosts: frontends
+  become: yes
+  tags: configure_frontend
+  vars:
+    GUID:  "{{ GUID }}"
+  roles:
+    - role: frontends
+
+- hosts: localhost
+  become: yes
+  tags: test haproxy
+  tasks:
+  - name: ensure haproxy is running
+    uri:
+      url: http://{{item}}/
+      status_code: 200
+    with_items: "{{groups['frontends']|list}}"

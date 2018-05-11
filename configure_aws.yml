@@ -1,58 +1,30 @@
 - hosts: tag_three_tier_app_*_bastion
   become: yes
   tasks:
-  - name: get ssh key name
-    find:
-      paths: /root/.ssh
-      patterns: '*.pem'
-    register: result
+  - name: get GUID
+    shell: hostname | awk -F"." '{print $1}' | awk -F"-" '{print $2}'
+    register: guid
 
-  - name: copy pem to tower
-    fetch:
-      src: "{{result.files[0].path}}"
-      dest: /tmp/
-    register: file
-  - name: hi
+  - name: set GUID
     debug:
-      msg: "{{file.dest}}"
+      msg: "{{guid.stdout}}"
 
-- hosts: tag_three_tier_app_*_app
-  become: yes
-  vars:
-    ansible_ssh_private_key_file: "{{file.dest}}"
-    ansible_ssh_user: ec2-user
-    ansible_user: ec2-user
-  tags: configure_apps
-  roles:
-    - role: apps
+  - name: set fact
+    set_fact:
+      GUID: "{{guid.stdout}}"
 
-- hosts: tag_three_tier_app_*_db
-  become: yes
-  vars:
-    ansible_ssh_private_key_file: "{{file.dest}}"
-    ansible_ssh_user: ec2-user
-    ansible_user: ec2-user
-  tags: configure_db
-  roles:
-    - role: appdbs
+  - name: clone repo
+    git:
+      repo: 'https://github.com/ahmbas/ansible-course.git'
+      dest: /root/ansible-course
 
-- hosts: tag_three_tier_app_*_frontend
-  become: yes
-  tags: configure_frontend
-  vars:
-    GUID:  "{{ GUID | default(lookup('env','GUID')) or 5414 }}"
-    ansible_ssh_private_key_file: "{{file.dest}}"
-    ansible_ssh_user: ec2-user
-    ansible_user: ec2-user
-  roles:
-    - role: frontends
+  - name: add playbook template
+    template:
+      src: /root/ansible-course/provision_aws.yaml.j2
+      dest: /root/ansible-course/provision_aws_playbook.yaml
+      owner: bin
+      group: wheel
+      mode: 0644
 
-- hosts: tag_three_tier_app_*_bastion
-  become: yes
-  tags: test haproxy
-  tasks:
-  - name: ensure haproxy is running
-    uri:
-      url: http://{{item}}/
-      status_code: 200
-    with_items: "{{groups['frontends']|list}}"
+  - name: run playbook
+    shell: "ansible-playbook /root/ansible-course/provision_aws_playbook.yaml"
