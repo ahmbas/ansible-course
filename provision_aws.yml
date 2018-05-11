@@ -5,3 +5,8 @@
   tasks:
     - name: run opentlc lab provision script
       shell: source /root/credential.rc ; sh /root/order_svc.sh -y -c 'OPENTLC Automation' -i 'Three Tier Application' -t 1
+      register: provision_result
+
+    - name: print provision_result
+      debug:
+        msg: provision_result
