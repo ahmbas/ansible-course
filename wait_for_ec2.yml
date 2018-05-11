@@ -9,6 +9,7 @@
         filters:
           "tag:owner": abashir*
           "tag:Project": three-tier-app-*
+          "tag:Name": bastion
       register: ec2
       until: ec2.instances != []
       retries: 100
